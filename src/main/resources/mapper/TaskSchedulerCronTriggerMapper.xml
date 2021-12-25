@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.tanagelee.tanscheduler.mapper.TaskSchedulerCronTriggerMapper">
+    <resultMap id="BaseResultMap" type="xyz.tanagelee.tanscheduler.domain.TaskSchedulerCronTrigger">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="trigger_type" jdbcType="SMALLINT" property="triggerType"/>
+        <result column="trigger_data" jdbcType="VARCHAR" property="triggerData"/>
+        <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression"/>
+        <result column="trigger_next_time" jdbcType="TIMESTAMP" property="triggerNextTime"/>
+        <result column="effect_date_start" jdbcType="DATE" property="effectDateStart"/>
+        <result column="effect_date_end" jdbcType="DATE" property="effectDateEnd"/>
+        <result column="is_valid" jdbcType="INTEGER" property="isValid"/>
+        <result column="task_type" jdbcType="VARCHAR" property="taskType"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , task_id, trigger_type, trigger_data, cron_expression, trigger_next_time, effect_date_start, effect_date_end,
+        is_valid, task_type, create_user, create_time, update_user, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from task_scheduler_cron_trigger
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="listByTriggerTime"
+            parameterType="map"
+            resultType="xyz.tanagelee.tanscheduler.domain.TaskSchedulerCronTrigger">
+        select
+        <include refid="Base_Column_List"/>
+        from task_scheduler_cron_trigger
+        where is_valid = 1
+        and trigger_next_time is not null
+        and trigger_next_time <![CDATA[<=]]> #{maxNextTime}
+        order by trigger_next_time asc, id asc
+        limit #{limit}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from task_scheduler_cron_trigger
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="xyz.tanagelee.tanscheduler.domain.TaskSchedulerCronTrigger"
+            useGeneratedKeys="true">
+        insert into task_scheduler_cron_trigger (task_id, trigger_type, trigger_data,
+                                                 cron_expression, trigger_next_time,
+                                                 effect_date_start, effect_date_end, is_valid,
+                                                 task_type, create_user, create_time,
+                                                 update_user, update_time)
+        values (#{taskId,jdbcType=BIGINT}, #{triggerType,jdbcType=SMALLINT}, #{triggerData,jdbcType=VARCHAR},
+                #{cronExpression,jdbcType=VARCHAR}, #{triggerNextTime,jdbcType=TIMESTAMP},
+                #{effectDateStart,jdbcType=DATE},
+                #{effectDateEnd,jdbcType=DATE}, #{isValid,jdbcType=INTEGER},
+                #{taskType,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="xyz.tanagelee.tanscheduler.domain.TaskSchedulerCronTrigger"
+            useGeneratedKeys="true">
+        insert into task_scheduler_cron_trigger
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">
+                task_id,
+            </if>
+            <if test="triggerType != null">
+                trigger_type,
+            </if>
+            <if test="triggerData != null">
+                trigger_data,
+            </if>
+            <if test="cronExpression != null">
+                cron_expression,
+            </if>
+            <if test="triggerNextTime != null">
+                trigger_next_time,
+            </if>
+            <if test="effectDateStart != null">
+                effect_date_start,
+            </if>
+            <if test="effectDateEnd != null">
+                effect_date_end,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="taskType != null">
+                task_type,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">
+                #{taskId,jdbcType=BIGINT},
+            </if>
+            <if test="triggerType != null">
+                #{triggerType,jdbcType=SMALLINT},
+            </if>
+            <if test="triggerData != null">
+                #{triggerData,jdbcType=VARCHAR},
+            </if>
+            <if test="cronExpression != null">
+                #{cronExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="triggerNextTime != null">
+                #{triggerNextTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="effectDateStart != null">
+                #{effectDateStart,jdbcType=DATE},
+            </if>
+            <if test="effectDateEnd != null">
+                #{effectDateEnd,jdbcType=DATE},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="taskType != null">
+                #{taskType,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="xyz.tanagelee.tanscheduler.domain.TaskSchedulerCronTrigger">
+        update task_scheduler_cron_trigger
+        <set>
+            <if test="taskId != null">
+                task_id = #{taskId,jdbcType=BIGINT},
+            </if>
+            <if test="triggerType != null">
+                trigger_type = #{triggerType,jdbcType=SMALLINT},
+            </if>
+            <if test="triggerData != null">
+                trigger_data = #{triggerData,jdbcType=VARCHAR},
+            </if>
+            <if test="cronExpression != null">
+                cron_expression = #{cronExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="triggerNextTime != null">
+                trigger_next_time = #{triggerNextTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="effectDateStart != null">
+                effect_date_start = #{effectDateStart,jdbcType=DATE},
+            </if>
+            <if test="effectDateEnd != null">
+                effect_date_end = #{effectDateEnd,jdbcType=DATE},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="taskType != null">
+                task_type = #{taskType,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey"
+            parameterType="xyz.tanagelee.tanscheduler.domain.TaskSchedulerCronTrigger">
+        update task_scheduler_cron_trigger
+        set task_id           = #{taskId,jdbcType=BIGINT},
+            trigger_type      = #{triggerType,jdbcType=SMALLINT},
+            trigger_data      = #{triggerData,jdbcType=VARCHAR},
+            cron_expression   = #{cronExpression,jdbcType=VARCHAR},
+            trigger_next_time = #{triggerNextTime,jdbcType=TIMESTAMP},
+            effect_date_start = #{effectDateStart,jdbcType=DATE},
+            effect_date_end   = #{effectDateEnd,jdbcType=DATE},
+            is_valid          = #{isValid,jdbcType=INTEGER},
+            task_type         = #{taskType,jdbcType=VARCHAR},
+            create_user       = #{createUser,jdbcType=VARCHAR},
+            create_time       = #{createTime,jdbcType=TIMESTAMP},
+            update_user       = #{updateUser,jdbcType=VARCHAR},
+            update_time       = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
